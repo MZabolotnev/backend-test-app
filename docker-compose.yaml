@@ -1,0 +1,30 @@
+version: '3.7'
+services:
+  db:
+    image: postgres:13
+    container_name: db-test-container
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: backend-test-app-container
+    environment:
+      - PORT=${PORT}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_DATABASE=${DB_DATABASE}
+      - DB_PORT=${DB_PORT}
+      - DB_HOST=${DB_HOST}
+    ports:
+      - '3000:3000'
+    depends_on:
+      - db
+    volumes:
+      - ./src:/app/src
+volumes:
+  postgres_data:
